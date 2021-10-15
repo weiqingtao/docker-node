@@ -1,9 +1,10 @@
 const router = require('koa-router')()
-
+const db = require("../DB/mysql");
+const redis = require("../DB/redis")
 router.get('/', async (ctx, next) => {
-  await ctx.render('index', {
-    title: 'Hello Koa 2!'
-  })
+  const data = await db.query("select * from user");
+  await redis.set("user", JSON.stringify(data));
+  ctx.body = data
 })
 
 router.get('/string', async (ctx, next) => {

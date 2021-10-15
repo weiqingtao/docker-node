@@ -1,0 +1,44 @@
+version: '3.0'
+services:
+
+  mysql:
+    image: mysql  #mysql服务
+    command: --default-authentication-plugin=mysql_native_password
+    ports:
+        - "3306:3306"
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: "root"
+      MYSQL_DATABASE: "docker_node"
+      MYSQL_USER: "wqt"
+      MYSQL_PASSWORD: "123456"
+    networks:
+      - docker-node
+  redis:
+    image: redis:6-alpine
+    ports:
+        - "6379:6379"
+    restart: always
+    environment:
+      REDIS_PORT: 6379
+    networks:  #定义服务的桥 用来服务连接
+      - docker-node
+  node-web:  #node 服务
+    build: ./
+    environment: #用到的env
+     - NODE_ENV=development 
+     - MYSQL_HOST=mysql 
+     - MYSQL_PASSWORD=123456 
+     - MYSQL_USER=wqt 
+     - MYSQL_DATABASE=docker_node
+     - REDIS_HOST=redis
+     - REDIS_PORT=6379 
+    ports:
+      - "3000:3000"
+    depends_on:
+      - mysql
+    networks:
+      - docker-node
+
+networks: #定义服务的桥 用来服务连接
+  docker-node:
