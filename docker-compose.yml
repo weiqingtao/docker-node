@@ -35,7 +35,7 @@ services:
      - REDIS_PORT=6379 
     ports:
       - "3000:3000"
-    depends_on:
+    depends_on: #web服务依靠mysql 要先等mysql启动
       - mysql
     networks:
       - docker-node
